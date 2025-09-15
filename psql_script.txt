@@ -1,0 +1,75 @@
+CREATE TABLE customer (
+id BIGSERIAL PRIMARY KEY,
+firstName VARCHAR(25),
+lastName VARCHAR(25),
+email VARCHAR(50),
+address VARCHAR(100)
+);
+
+CREATE TABLE product (
+id BIGSERIAL PRIMARY KEY,
+name VARCHAR(50),
+description VARCHAR(100),
+price MONEY,
+stockQuantity BIGINT
+);
+
+CREATE TABLE "order" (
+id BIGSERIAL PRIMARY KEY,
+clientID BIGINT REFERENCES Customer(id),
+date DATE,
+status VARCHAR(15),
+amount MONEY
+);
+
+CREATE TABLE orderitem (
+id BIGSERIAL PRIMARY KEY,
+orderID BIGINT REFERENCES "Order"(id),
+productID BIGINT REFERENCES Product(id),
+quantity INT,
+unitPrice MONEY
+);
+
+CREATE TABLE payment (
+id BIGSERIAL PRIMARY KEY,
+orderID BIGINT REFERENCES "Order"(id),
+amount MONEY,
+date DATE,
+paymentPlatform VARCHAR(50)
+);
+
+-- Insert customer datas
+INSERT INTO customer (firstName, lastName, email, address) VALUES
+('Jean', 'Dupont', 'jean.dupont@email.com', '123 Rue de la Paix, Paris'),
+('Marie', 'Durand', 'marie.durand@email.com', '456 Avenue des Champs, Lyon'),
+('Pierre', 'Lefevre', 'pierre.lefevre@email.com', '789 Boulevard Victor Hugo, Marseille'),
+('Sophie', 'Martin', 'sophie.martin@email.com', '10 Rue de la Liberté, Toulouse');
+
+-- Insert product datas
+INSERT INTO product (name, description, price, stockQuantity) VALUES
+('Laptop', 'Powerful laptop for gaming', 1200.00, 50),
+('Wireless Mouth', 'For an everyday use', 25.50, 200),
+('Mecanical keyboard', 'Ideal for fast typing', 85.00, 150),
+('27" monitor', 'High resolution monitor', 250.00, 75);
+
+-- Insert order datas
+INSERT INTO "order" (clientID, date, status, amount) VALUES
+(1, '2023-10-26', 'Shipped', 1225.00),
+(2, '2023-10-27', 'Shipping', 250.00),
+(1, '2023-10-27', 'Waiting', 85.00),
+(3, '2023-10-28', 'Shipped', 1200.00);
+
+-- Insert orderitem datas
+INSERT INTO orderitem (orderID, productID, quantity, unitPrice) VALUES
+(1, 1, 1, 1200.00),
+(1, 2, 1, 25.00),
+(2, 4, 1, 250.00),
+(3, 3, 1, 85.00),
+(4, 1, 1, 1200.00);
+
+-- Insert payment datas
+INSERT INTO payment (orderID, amount, date, paymentPlatform) VALUES
+(1, 1225.00, '2023-10-26', 'Stripe'),
+(2, 250.00, '2023-10-27', 'PayPal'),
+(3, 85.00, '2023-10-27', 'Stripe'),
+(4, 1200.00, '2023-10-28', 'PayPal');
